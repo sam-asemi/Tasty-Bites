@@ -1,93 +1,120 @@
-Tasty Bytes Recipe Site Traffic
-Data Validation
-In the first step, we use the first row as column headers and remove it from the data to prevent duplication. Next, we replace missing value placeholders (e.g., NA, N/A, NULL, -, and '') with NaN using NumPy. To maintain data quality, we drop rows containing fewer than 5 non-null values.
+# 🍽️ Tasty Bytes Recipe Site Traffic Analysis
 
-Finally, we fill missing values in the high_traffic column with the label "Not High" to ensure consistency in the dataset.
+This project analyzes recipe page performance for **Tasty Bytes**, a fictitious recipe website, using a combination of **data cleaning**, **exploratory analysis**, and **machine learning modeling** to predict whether a recipe will generate high or low traffic.
 
-Distribution of High Traffic Recipes
-The histogram illustrates the distribution of website traffic across recipes, providing insights into whether most recipes experience high or low traffic. The chart reveals that a larger proportion of recipes receive high traffic compared to those with low traffic, indicating that popular recipes make up a significant portion of the website's content.
-![image](https://github.com/user-attachments/assets/75994f49-153f-4120-bfa7-1b666b537b73)
+---
 
+## 📊 Objective
 
-Recipe Category Distribution
-The pie chart displays the proportion of recipes by category, highlighting the dominant categories that may influence website traffic. The chart reveals a fairly even distribution across all categories, suggesting that no single category overwhelmingly dominates the recipe collection.
-![image](https://github.com/user-attachments/assets/6c3cc47f-54b1-4fdf-9a01-10190cce949d)
+To build a classification model that predicts whether a recipe will experience **high traffic** based on features such as category, calories, and other metadata—helping content teams prioritize and optimize recipes for user engagement.
 
+---
 
-High Vs Not High Traffic Based on Category
-The stacked bar chart illustrates the distribution of high vs. not high traffic across recipe categories. Each bar represents a category, with two segments showing the proportion of high-traffic and not high-traffic recipes. The chart reveals which categories tend to attract more traffic, helping identify high-performing recipe types. Categories with a larger red segment (high traffic) indicate stronger user engagement, while those with a larger blue segment (not high traffic) may require optimization or promotion.
-![image](https://github.com/user-attachments/assets/490cac14-612e-43e0-ba90-f8493745e1e5)
+## 🧹 Data Cleaning & Validation
 
+- Set the **first row as column headers**, then removed it from the dataset
+- Replaced missing values placeholders (`NA`, `N/A`, `NULL`, `-`, and `''`) with `NaN`
+- Removed rows with **fewer than 5 non-null values**
+- Filled missing values in the `high_traffic` column with `"Not High"` for consistency
 
-Calories per Recipe Category
-The bar plot illustrates the relationship between recipe categories and their calorie content, allowing for a clear comparison of calorie variations across categories. It highlights which categories tend to feature higher-calorie recipes and which ones typically contain lower-calorie options, offering insights into the nutritional profile of different recipe types.Also, calorie content does not strongly correlate with high traffic, suggesting that users may be influenced by other factors.
-![image](https://github.com/user-attachments/assets/7a836e88-8f9c-4ef6-b275-4c8987cc4388)
+---
 
+## 📊 Exploratory Data Analysis
 
-Model Development
-a) Problem Type Statement
+### 🔸 High Traffic Distribution
 
-The task is a binary classification problem, where the goal is to predict whether a recipe will generate high traffic or low traffic based on various features (e.g., category, calories, etc.).
+Most recipes received **high traffic**, suggesting a skew toward popular content on the site.
 
-Target variable: high_traffic (binary: 1 for high, 0 for not high).
+![High Traffic Histogram](https://github.com/user-attachments/assets/75994f49-153f-4120-bfa7-1b666b537b73)
 
-Features: All other columns, including category and calories.
+---
 
-b) Reason for Model Selection
+### 🔸 Recipe Category Distribution
 
-Logistic Regression (Baseline Model): Chosen as the baseline due to its simplicity and interpretability. Suitable for binary classification problems. Provides probabilistic outputs, making it useful for threshold-based decisions.
+Recipe categories are fairly **evenly distributed**, indicating no single content type dominates the site.
 
-Support Vector Machine (SVM): Chosen as a comparison model due to its ability to handle complex, non-linear relationships. Uses kernel tricks to separate classes in higher-dimensional spaces. GridSearchCV was used to tune hyperparameters, improving performance.
+![Category Pie Chart](https://github.com/user-attachments/assets/6c3cc47f-54b1-4fdf-9a01-10190cce949d)
 
-Key Insights from Model Evaluation
-Accuracy: The Logistic Regression model achieved 77% accuracy, which is higher than the 59% accuracy of the SVM model. Accuracy alone is not always the best metric, especially when class imbalance is present.
+---
 
-Precision: Logistic Regression achieves a precision of 0.79, indicating that 79% of the recipes it labels as high-traffic are actually high-traffic. The SVM model has a significantly lower precision of 0.59, meaning 41% of the recipes it predicts as high-traffic are false positives. This could lead to less relevant recipes being promoted on the website, which may hurt customer experience.
+### 🔸 High vs. Not High Traffic by Category
 
-Recall: The SVM model achieved a perfect recall (1.00), meaning it correctly identified all high-traffic recipes. However, the lower accuracy indicates it might be overfitting to the positive class.
+This stacked bar chart reveals which **recipe categories attract more traffic**, helping content teams identify high-performing segments.
 
-F1-Score: Logistic Regression has a slightly higher F1-score (0.81) compared to SVM (0.74), suggesting a better balance between precision and recall.
-![image](https://github.com/user-attachments/assets/f22e6526-d9fa-42bf-9a81-30d1c089e3b2)
+![Traffic by Category](https://github.com/user-attachments/assets/490cac14-612e-43e0-ba90-f8493745e1e5)
 
+---
 
-Business Metrics and Comparison
-False Positives (FP):
-Recipes incorrectly classified as high traffic. This could result in displaying low-performing recipes on the homepage, reducing customer engagement.
+### 🔸 Calories by Category
 
-Logistic Regression: 18 FP
-SVM: 0 FP
-False Negatives (FN):
-Recipes incorrectly classified as low traffic. Missing out on promoting a high-performing recipe could reduce potential traffic and revenue.
+Shows which categories are typically **higher or lower in calories**, though **no strong correlation** with traffic volume was found.
 
-Logistic Regression: 23 FN
-SVM: 73 FN
-True Positives (TP):
-Recipes that are truly high traffic and correctly classified as high traffic.
+![Calories by Category](https://github.com/user-attachments/assets/7a836e88-8f9c-4ef6-b275-4c8987cc4388)
 
-Logistic Regression: 50 TP
-SVM: 0 TP
-True Negatives (TN):
-Recipes that are truly low traffic and correctly classified as low traffic.
+---
 
-Logistic Regression: 88 TN
-SVM: 106 TN
-Key Insights:
-The SVM model is overly biased toward predicting recipes as low traffic, leading to zero true positives and high false negatives (73).
-The Logistic Regression model has a more balanced classification but still misclassifies some recipes.
-SVM's behavior may be due to class imbalance or a poorly tuned model, which should be investigated further.
-Summary
-Logistic Regression: Higher overall accuracy (77%). Balanced recall and precision with a solid F1-score (81%). More reliable for general-purpose classification.
+## 🤖 Model Development
 
-SVM with GridSearchCV: Perfect recall (100%) ensures no high-traffic recipes are missed. Lower accuracy, indicating overfitting or poor handling of class imbalance. Better for scenarios where missing a high-traffic recipe is costly.
+### 🧠 Problem Type
+- **Binary Classification**: Predict whether a recipe is `high_traffic = 1` or `not_high = 0`
 
-Recommendations
-Model Selection:
+### 🔍 Models Evaluated
+- **Logistic Regression**: Simple, interpretable baseline
+- **Support Vector Machine (SVM)**: More flexible, capable of capturing non-linear relationships  
+  *(Hyperparameters tuned using `GridSearchCV`)*
 
-Based on the Precision, F1-score and accuracy, Logistic Regression is the better option for general performance. If recall (catching all high-traffic recipes) is the main priority, SVM might be preferable, but you should be cautious of its lower accuracy and potential false positives.
+---
 
-Business Actions:
+## 🧪 Model Performance Comparison
 
-Use the Logistic Regression model for production deployment due to its balanced performance.
-Regularly retrain the model with new data to prevent concept drift.
-Monitor recall and precision to avoid displaying low-performing recipes.
-Collect additional features such as user engagement time or recipe reviews to improve model performance.
+| Metric        | Logistic Regression | SVM      |
+|---------------|---------------------|----------|
+| Accuracy      | **77%**             | 59%      |
+| Precision     | **0.79**            | 0.59     |
+| Recall        | 0.68                | **1.00** |
+| F1-Score      | **0.81**            | 0.74     |
+
+📌 **Logistic Regression** outperformed SVM in most metrics, except for recall.
+
+![Model Evaluation](https://github.com/user-attachments/assets/f22e6526-d9fa-42bf-9a81-30d1c089e3b2)
+
+---
+
+## 📈 Confusion Matrix Comparison
+
+| Metric        | Logistic Regression | SVM      |
+|---------------|---------------------|----------|
+| False Positives | 18                | **0**    |
+| False Negatives | **23**            | 73       |
+| True Positives  | **50**            | 0        |
+| True Negatives  | 88                | **106**  |
+
+### 🔍 Key Insight:
+- **SVM perfectly identified all low-traffic recipes**, but **failed to identify any high-traffic ones**, making it unsuitable unless recall is the sole concern.
+- **Logistic Regression provided a balanced approach**, suitable for general deployment.
+
+---
+
+## ✅ Recommendations
+
+### 🎯 Model Deployment
+- Use **Logistic Regression** as the primary model due to its **balanced precision and recall**
+- Consider SVM if the **cost of missing high-traffic recipes is extremely high**, but validate thoroughly due to its poor precision
+
+### 📉 Business Impact
+- **False Positives**: Promoting low-performing recipes may reduce site engagement
+- **False Negatives**: Failing to highlight popular recipes could hurt traffic and revenue
+
+### 🔄 Continuous Improvement
+- Retrain the model regularly to avoid concept drift
+- Integrate additional features (e.g., time on page, user ratings)
+- Address class imbalance using resampling or custom loss functions
+
+---
+
+## 📬 Summary
+
+This project highlights how **machine learning and data visualization** can provide real-time insights into **content performance**. With a well-balanced classification model, recipe websites can better allocate promotional efforts, improve user engagement, and optimize content strategy.
+
+---
+
